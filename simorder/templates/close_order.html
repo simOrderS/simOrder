@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load i18n static custom_tags %}
+
+{% block title %} {% trans 'Make2Order: Close order' %} {% endblock %}
+
+{% block content %}
+<h3>{% trans 'Close order' %}</h3>
+<form method="post">
+{% csrf_token %}
+
+<!-- Order Form -->
+<div class="row">
+    <div class="col">
+        <label for="{{ orderForm.orderTable.auto_id }}" class="form-label">{{ orderForm.orderTable.label }}</label>
+        <input type="text" class="form-control" name="{{ orderForm.orderTable.name }}" value="{{ orderForm.orderTable.value }}" readonly id="{{ orderForm.orderTable.auto_id }}">
+    </div>
+    <div class="col">
+        <label for="{{ orderForm.menuQuery.auto_id }}" class="form-label">{{ orderForm.menuQuery.label }}</label>
+        <select class="form-select" name="{{ orderForm.menuQuery.name }}" id="{{ orderForm.menuQuery.auto_id }}" readonly>
+            {% for value, text in orderForm.fields.menuQuery.choices %}
+            <option value="{{ value }}">{{ text }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- Messages -->
+{% if messages %}
+{% for message in messages %}
+<div class="row mt-3">
+    <div class="col">
+        {% if message.tags == "success" %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "warning" %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "error" %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-xmark"></i>&nbsp;&nbsp;{{ message }}
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- ProductOrderCloseForm -->
+<div class="row">    
+    <div class="col-flex">     
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>{% trans 'Product' %}</th>
+                <th style=" text-align:right;">{% trans 'Price' %}</th>
+                <th>
+                    <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" onclick="select_all(this);" name="select_all_poStatus" id="id_select_all_poStatus">&nbsp;&nbsp;{% trans 'Close all' %}
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>        
+        {% for name, field in prodOrderForm.fields.items %}
+        {% if field.prodInstance %}
+        <tr>
+            <td><label type="text" name="prodQuery_{{ field.prodInstance.id }}">{{ field.prodInstance.poProdDescription }}</label></td>
+            <td style="text-align:right;">
+                <label type="text" name="prodPrice_{{ field.prodInstance.id }}">{{ field.prodInstance.poProdPrice }}</label>
+            </td>
+            {% if field.prodInstance.poStatus %}
+            <td>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" style="background-color: gray;border-color: gray;" type="checkbox" name="{{ name }}" id="{{ name }}" data-price="{{ field.prodInstance.poProdPrice }}" checked readonly>
+                    <input type="hidden" name="{{ name }}" value="0">
+                </div>
+            </td>
+            {% else %}
+            <td>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" name="{{ name }}" id="{{ name }}" data-price="{{ field.prodInstance.poProdPrice }}">
+                </div>
+            </td>
+            {% endif %}
+        </tr>
+        {% endif %}
+        {% endfor %}
+        <tr>
+            <th>{% trans 'Total' %}</th>
+            <th style="text-align:right;">{{ order.get_total_order|floatformat:2 }}</th>
+            <th></th>
+        </tr>
+        <tr><th></th><th></th><th></th></tr>
+        <tr class="table-success">
+            <th>{% trans 'Closed' %}</th>
+            <th style="text-align:right;">{{ order.get_total_closed|floatformat:2 }}</th>
+            <th></th>
+        </tr>
+        <tr class="table-warning">
+            <th>{% trans 'Closing now' %}</th>
+            <th id="subTotal" style="text-align:right;"></th>
+            <th></th>
+        </tr>
+        <tr><th></th><th></th><th></th></tr>
+        <tr class="table-info">
+            <th>{% trans 'Payment' %}</th>
+            <th style="text-align:right;">
+                <input type="number" class="form-control" style="text-align: right;" name="poPayAmount_" value="{{ prodOrderForm.poPayAmount_.value|floatformat:2 }}"
+                    step="0.01" min="0" id="id_poPayAmount_">
+            </th>
+            <th>{{ prodOrderForm.poPayMethod_ }}</th>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <!-- provide some space so that payment field do not conflict with cancel/ save buttons -->
+</div>
+
+<div class="container">
+    <div class="fixed-bottom d-flex justify-content-center p-3">
+        <a type="button" class="btn btn-danger btn-lg" href="{%url 'urlOrders' %}"><i class="fa-solid fa-xmark"></i><span class="ms-2 d-sm-inline">{% trans 'Cancel' %}</span></a>
+        <button type="submit" class="btn btn-success btn-lg" id="btnSave" name="btnSave"><i class="fa-solid fa-check" id="checkIcon"></i>
+            <span class="spinner-border spinner-border-sm m-1 d-none" role="status" id="spinner"></span>{% trans 'Save' %}
+        </button>
+        <!--<button type="submit" class="btn btn-success btn-lg"><i class="fa-solid fa-check"></i><span class="ms-2 d-sm-inline">{% trans 'Save' %}</span></button>-->
+    </div>
+</div>
+
+</form>
+</div>
+<script>
+    function select_all(source) {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="poStatus_"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = source.checked; // Set checked state based on "Close all"
+            
+            // Trigger change event to update totals
+            const event = new Event('change', { bubbles: true });
+            checkbox.dispatchEvent(event);
+        });
+    }
+    // Function to calculate total based on checked checkboxes
+    function calculateTotal() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="poStatus_"]');
+        let total = 0;
+        let firstCalculation = true;
+    
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                if (firstCalculation && checkbox.hasAttribute('data-initial-checked')) {
+                    return;
+                }
+                total += Number(checkbox.dataset.price);
+            }
+        });
+        document.getElementById('subTotal').textContent = total.toFixed(2);
+    }
+    
+    // Initialize total on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name^="poStatus_"]');
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                checkbox.setAttribute('data-initial-checked', 'true');
+            }
+        });
+        calculateTotal();
+    
+        // Add change event listener to all product status checkboxes
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', calculateTotal);
+        });
+    });
+    // Handle Spinner at Save button
+    document.addEventListener('DOMContentLoaded', function() {
+        const createButton = document.getElementById('btnSave');
+        const spinner = document.getElementById('spinner');
+        const checkIcon = document.getElementById('checkIcon');
+
+    createButton.addEventListener('click', function() {
+        spinner.classList.remove('d-none');
+        checkIcon.classList.add('d-none');
+    
+    setTimeout(function() {
+        spinner.classList.add('d-none');
+        checkIcon.classList.remove('d-none');
+        }, 15000);
+    });
+    window.addEventListener('load', function() {
+        checkIcon.classList.remove('d-none');
+        spinner.classList.add('d-none');
+        });
+    });
+</script>    
+{% endblock %}

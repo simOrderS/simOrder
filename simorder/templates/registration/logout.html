@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'base.html' %}
+    <title>{% block title %} Make2Order: Logout {% endblock %}</title>
+</head>
+<body>
+
+{% block content %}
+  <p>Logged out!</p>
+  <a href="{% url 'login'%}">Click here to login again.</a>
+{% endblock %}

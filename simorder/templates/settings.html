@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load i18n static custom_tags %}
+
+{% block title %}{% trans 'simOrder: System Settings' %}{% endblock %}
+
+{% block content %}
+<h3>{% trans 'System Settings' %}</h3>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <!-- Messages -->
+    {% if messages %}
+    {% for message in messages %}
+    <div class="row mt-3">
+        <div class="col">
+            {% if message.tags == "success" %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-check"></i>&nbsp;&nbsp;{{ message }}
+            {% elif message.tags == "warning" %}
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;{{ message }}
+            {% elif message.tags == "error" %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fa-solid fa-circle-xmark"></i>&nbsp;&nbsp;{{ message }}
+            {% endif %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button></div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% for field in form %}
+        <div class="mt-3">
+            <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}:</label>
+            {% if field.field.widget.input_type == 'password' %}
+            <div class="input-group">
+                <input type="password" class="form-control" name="{{ field.name }}" id="{{ field.auto_id }}" value="{{ field.value|default_if_none:'' }}">
+                <button class="btn btn-outline-secondary toggle-password" type="button" data-target="{{ field.auto_id }}">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            {% else %}
+                <input type="{{ field.field.widget.input_type }}" class="form-control" name="{{ field.name }}" id="{{ field.auto_id }}" value="{{ field.value|default_if_none:'' }}">
+            {% endif %}
+        {% if field.help_text %}
+            <div><small class="text-muted"><i class="fa-solid fa-circle-info pe-2"></i>{{ field.help_text }}</small></div>
+        {% endif %}
+        {% for error in field.errors %}
+            <div><small class="text-danger"><i class="fa-solid fa-triangle-exclamation pe-2"></i>{{ error }}</small></div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="mt-3">
+        <a type="button" class="btn btn-danger" href="{% url 'urlHome' %}"><i class="fa-solid fa-xmark"></i>
+        <span class="ms-2 d-sm-inline">{% trans 'Cancel' %}</span>
+        </a>
+        <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i><span class="ms-2 d-sm-inline">{% trans 'Save' %}</span></button>
+    </div>
+
+</form>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.toggle-password');
+        
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    this.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+                } else {
+                    passwordInput.type = 'password';
+                    this.innerHTML = '<i class="fa-solid fa-eye"></i>';
+                }
+            });
+        });
+    });
+</script>    
+{% endblock %}

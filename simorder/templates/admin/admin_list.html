@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% load i18n static custom_tags %}
+{% block title %} {% trans 'simOrder:' %} {{ app_list.0.name }} {% endblock %}
+
+{% block extrastyle %}
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<h3>{% trans app_list.0.name %}</h3>
+<!-- Tab navigation -->
+<div class="row mt-3">
+  <div class="col">
+  <ul class="nav nav-pills" id="menuTab" role="tablist">
+    {% for app in app_list %}
+      {% for model in app.models %}
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="{{ forloop.counter0 }}-tab" data-bs-toggle="tab" data-bs-target="#{{ model.model_name }}" type="button" 
+          role="tab" aria-controls="{{ model.model_name }}" aria-selected="true">{{ model.name }}</button>
+      </li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+
+<!-- Messages -->
+{% if messages %}
+{% for message in messages %}
+<div class="row mt-3">
+    <div class="col">
+        {% if message.tags == "success" %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "warning" %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "error" %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-xmark"></i>&nbsp;&nbsp;{{ message }}
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button></div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- Tab content -->
+  <div class="tab-content mt-3" id="menuTabContent">
+  {% for app in app_list %}
+    {% for model in app.models %}
+    <div class="tab-pane fade" id="{{ model.model_name }}" role="tabpanel" aria-labelledby="{{ forloop.counter0 }}-tab">
+      <a type="button" class="btn btn-success mb-3" href="{% url 'customadmin:custom_add' app.app_label model.model_name %}?tab={{ forloop.counter0 }}">
+        <i class="fa-solid fa-plus me-2"></i>{% trans 'New' %} {{ model.verbose_name|capfirst }}
+      </a>
+      {% if model.all_objects %}
+      <div class="table-responsive">
+        <table class="table table-striped table-hover">
+          <thead>
+            <tr>
+              {% for field in model.list_display %}
+              <th>{{ field.verbose_name }}</th>
+              {% endfor %}
+              <th>{% trans 'Actions' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for obj in model.all_objects %}
+              <tr>
+                {% for field in model.list_display %}
+                  {% if obj|getattribute:field.name|is_hex_color %}
+                  <td><svg width="50" height="50"><rect width="50" height="50" style="fill:{{obj|getattribute:field.name}}" /></svg></td>
+                  {% elif obj|getattribute:field.name == True and obj|get_field_type:field.name == 'BooleanField' %}
+                  <td><span style="color: green;"><i class="fa-regular fa-circle-check"></span></i></td>     
+                  {% elif obj|getattribute:field.name == False and obj|get_field_type:field.name == 'BooleanField' %}
+                  <td><span style="color: red;"><i class="fa-solid fa-circle-xmark"></i></span></i></td>
+                  <!-- Special case for 'Menu' model -->
+                  {% elif field.name == 'menuDescription' %}
+                  <td><a type="button" class="btn btn-secondary btn-sm me-2" title="List of Products" data-bs-toggle="collapse" 
+                    data-bs-target=".table_{{ obj.pk }}" aria-expanded="false"><i class="fa-solid fa-chevron-down"></i></a>{{ obj }}
+                  </td>
+                  <td class="collapse table_{{ obj.pk }}">
+                    <div>
+                    <table class="table table-striped">
+                      <thead>
+                          <tr>
+                            <th>{% trans 'Product Class' %}</th>
+                            <th>{% trans 'Product' %}</th>
+                            <th>{% trans 'Price' %}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {% for prod in obj.prodQuery.all %}
+                          <tr>
+                            <td>{{ prod.prodclassQuery }}</td>
+                            <td>{{ prod.prodDescription }}</td>
+                            <td>{{ prod.prodPrice }}</td>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                    </table>
+                    </div>
+                  </td>
+                  <!-- -->
+                  {% else %}
+                  <td>{{ obj|getattribute:field.name }}</td>
+                  {% endif %}
+                {% endfor %}
+                  <td>
+                    <a type="button" class="btn btn-link" title="Edit" href="{% url 'customadmin:custom_change' app.app_label model.model_name obj.id %}?tab={{ forloop.parentloop.counter0 }}">
+                      <span style="color: orange;"><i class="fa-solid fa-pen"></i></span>
+                    </a>
+                    <a type="button" class="btn btn-link" title="Delete" href="{% url 'customadmin:custom_delete' app.app_label model.model_name obj.id %}?tab={{ forloop.parentloop.counter0 }}" 
+                        onclick="return confirm('{{model.verbose_name|capfirst}} *{{ obj }}* will be permanentely deleted. Are you sure?')">
+                      <span style="color: red;"><i class="fa-solid fa-trash"></i></span>
+                  </a>
+                  </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-danger">{% blocktrans with model_name=model.name|capfirst %}No {{ model_name }} found.{% endblocktrans %}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  {% endfor %}
+  </div>
+</div>
+
+<script>
+  // Activate the last visited tab or the first one
+  document.addEventListener("DOMContentLoaded", function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTabId = urlParams.get('tab');
+
+    if (activeTabId) {
+      const activeTab = document.getElementById(`${activeTabId}-tab`);
+      if (activeTab) {
+        const tab = new bootstrap.Tab(activeTab);
+        tab.show();
+      }
+    } else {
+      const firstTab = document.getElementById('0-tab');
+      const tab = new bootstrap.Tab(firstTab);
+      tab.show();
+    }
+  });
+</script>
+{% endblock %}
+
+

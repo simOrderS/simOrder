@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load i18n static custom_tags %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}"/>
+  <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <title>{% block title %}{% endblock %}</title>
+  <style type="text/css">
+    a[aria-expanded=true] .fa-chevron-down {
+      transition: .3s transform ease-in-out;
+      transform: rotate(180deg);
+    }
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    @media (max-width: 767px) {
+      .sidebar {
+        width: 60px !important;
+      }
+      .sidebar .d-none {
+        display: none !important;
+      }
+      .content {
+        margin-left: 10px;
+        padding-left: 5px;
+      }
+    }
+    @media (min-width: 768px) and (max-width: 991px) and (orientation: portrait) {
+      .sidebar {
+        width: 80px !important;
+        padding-right: 5px;
+      }
+      .sidebar .d-none {
+        display: none !important;
+      }
+      .content {
+        margin-left: 10px;
+        padding-left: 5px;
+      }
+    }
+    @media only screen 
+      and (min-device-width: 768px) 
+      and (max-device-width: 1024px) 
+      and (orientation: landscape) {
+      .sidebar {
+        width: 200px !important;
+      }
+      .content {
+        margin-left: 10px;
+      }
+    }
+    .sidebar {
+      transition: width 0.3s ease;
+    }
+    .content {
+      transition: margin-left 0.3s ease;
+    }
+  </style>  
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row flex-nowrap">
+      <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0 bg-secondary sidebar">
+        <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+          <img src="{% static 'img/simOrder_logo_white.svg' %}" alt="Logo" class="img-fluid mb-3 mt-3">
+          <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start fs-5" id="menu-base">
+            <li class="nav-item">
+              <a href="{% url 'urlHome' %}" class="nav-link align-middle px-0 py-3 text-white">
+                <i class="fa-solid fa-house"></i><span class="ms-2 d-none d-md-inline">{% trans 'Home' %}</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'urlOrders' %}" class="nav-link align-middle px-0 py-3 text-white">
+                <i class="fa-solid fa-user-pen"></i><span class="ms-2 d-none d-md-inline">{% trans 'My Orders' %}</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'urlOrdersAll' %}" class="nav-link align-middle px-0 py-3 text-white">
+                <i class="fa-solid fa-list-check"></i><span class="ms-2 d-none d-md-inline">{% trans 'All Orders' %}</span>
+              </a>
+            </li>
+            {% if user.is_staff %}
+            <li>
+              <div class="dropdown pb-0 fs-5">
+                <a href="#" class="nav-link px-0 py-3 text-white align-middle dropdown-toggle" id="dropdownAdmin" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-user-gear"></i><span class="ms-2 d-none d-md-inline">{% trans 'Admin' %}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownAdmin">
+                  <li><a class="dropdown-item" href="{% url 'admin:custom_auth' %}">{% trans 'Users and Groups' %}</a></li>
+                  <li><a class="dropdown-item" href="{% url 'admin:custom_simorder' %}">{% trans 'MasterData' %}</a></li>
+                  <li><a class="dropdown-item" href="{% url 'urlAdminOrdersAll' %}">{% trans 'Analytics' %}</a></li>
+                </ul>
+              </div>
+            </li>
+            <li>
+              <div class="dropdown pb-0 fs-5">
+                <a href="#" class="nav-link px-0 py-3 text-white align-middle dropdown-toggle" id="dropdownSettings" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fa-solid fa-wrench"></i><span class="ms-2 d-none d-md-inline">{% trans 'Settings' %}</span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownSettings">
+                  <li><a class="dropdown-item" href="{% url 'urlPrinters' %}">{% trans 'Printers' %}</a></li>
+                  <li><a class="dropdown-item" href="{% url 'urlSettings' %}">{% trans 'System' %}</a></li>
+                </ul>
+              </div>
+            </li>
+            {% endif %}
+            <li>
+              {% if user.is_authenticated %}
+              <form class="logout-form" id="logout-form" method="post" action="{% url 'logout' %}?next={% url 'login' %}">
+                {% csrf_token %}
+                <a href="#" class="nav-link px-0 py-3 text-white align-middle" onclick="document.getElementById('logout-form').submit()">
+                  <i class="fa-solid fa-right-from-bracket"></i><span class="ms-2 d-none d-md-inline">{% trans 'Logout' %}</span>
+                </a>
+              </form>
+              {% else %}
+              <a href="{% url 'login' %}?next={{ urlHome }}" class="nav-link px-0 py-3 text-white align-middle">
+                <i class="fa-solid fa-right-to-bracket"></i><span class="ms-2 d-none d-md-inline">{% trans 'Login' %}</span>
+              </a>
+              {% endif %}
+            </li>
+          </ul>
+          <hr>
+          <div class="dropdown pb-0 fs-5 mb-5">
+            <a href="#" class="nav-link px-0 py-3 text-white align-middle dropdown-toggle" id="dropdownPower" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-power-off"></i><span class="ms-2 d-none d-md-inline">{% trans 'Power' %}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownPower">
+              <li><a class="dropdown-item" href="{% url 'urlPower' 0 %}" onclick="return confirm ('You are about to shutdown the system. Are you sure?')">{% trans 'Shutdown' %}</a></li>
+              <li><a class="dropdown-item" href="{% url 'urlPower' 1 %}" onclick="return confirm ('You are about to reboot the system. Are you sure?')">{% trans 'Reboot' %}</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col py-3 content">
+        {% if user.is_authenticated %}
+          <h4 class="text-secondary">{% trans 'Welcome to simOrder' %},<span style="color:#FF7F50;">&nbsp;{{ user.get_username }}</span></h4>
+        {% else %}
+          <h4 class="text-secondary">{% trans 'simOrder: please login' %}</h4>
+          <hr class="mt-0 mb-4">
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load i18n static custom_tags %}
+
+{% block title %} {% trans 'simOrder: Power' %} {% endblock %}
+
+{% block content %}
+
+<div id="shutdown-status">
+    <h3>{{ message }}</h3>
+    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">{% trans 'Loading...' %}</span>
+    </div>
+</div>
+
+<div id="shutdown-message" style="display: none;">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% if op_id == 0 %}
+        <i class="fa-solid fa-circle-check me-2"></i>{% trans 'You can now shut down your Pi.' %}
+        {% else %}
+        {% url 'urlHome' as home_url %}
+        {% blocktrans %}
+        <i class="fa-solid fa-circle-check me-2"></i>Restart in process. Go to <a href="{{ home_url }}">Home</a> after some seconds.
+        {% endblocktrans %}
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button>
+    </div>
+</div>
+
+<script>
+    function checkPowerStatus() {
+        Promise.all([
+            fetch('/power/0'),
+            fetch('/power/1')
+        ])
+        .then(responses => {
+            if (responses.every(response => response.ok)) {
+                console.log("Both power endpoints are responding");
+            } else {
+                console.log("At least one power endpoint is not responding");
+                document.getElementById('shutdown-status').style.display = 'none';
+                document.getElementById('shutdown-message').style.display = 'block';
+            }
+        })
+        .catch(() => {
+            console.log("Error occurred while checking power status");
+            document.getElementById('shutdown-status').style.display = 'none';
+            document.getElementById('shutdown-message').style.display = 'block';
+        });
+    }
+
+    checkPowerStatus();
+    setInterval(checkPowerStatus, 5000);
+</script>
+{% endblock content %}

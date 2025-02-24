@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load i18n static custom_tags %}
+
+{% block title %} {% trans 'Make2Order: New order' %} {% endblock %}
+
+{% block content %}
+<h3>{% trans 'New Order' %}</h3>
+<form method="post">
+{% csrf_token %}
+
+<!-- Order Form -->
+<div class="row">
+    <div class="col">
+        <label for="{{ orderForm.orderTable.auto_id }}" class="form-label">{{ orderForm.orderTable.label }}</label>
+        <input type="text" class="form-control" name="{{ orderForm.orderTable.name }}" id="{{ orderForm.orderTable.auto_id }}" value="{{ orderForm.orderTable.value|default:'' }}">
+    </div>
+    <div class="col">
+        <label for="{{ orderForm.menuQuery.auto_id }}" class="form-label">{{ orderForm.menuQuery.label }}</label>
+        {% for value, text in orderForm.fields.menuQuery.choices %}
+        <!--<input type="hidden" class="form-control" name="{{ orderForm.menuQuery.name }}" value="{{ value }}" id="{{ orderForm.menuQuery.auto_id }}">
+        <input type="text" class="form-control" value="{{ text }}" readonly>-->
+        {% endfor %}
+        <select class="form-select" name="{{ orderForm.menuQuery.name }}" id="{{ form.menuQuery.auto_id }}" readonly>
+            {% for value, text in orderForm.fields.menuQuery.choices %}
+            <option value="{{ value }}">{{ text }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<!-- Messages -->
+{% if messages %}
+{% for message in messages %}
+<div class="row mt-3">
+    <div class="col">
+        {% if message.tags == "success" %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "warning" %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "error" %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-xmark"></i>&nbsp;&nbsp;{{ message }}
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button></div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- Tab navigation -->
+{% regroup prodOrderForm.fields.items by 1.prodClass as prodclassList %}
+<div class="row mt-3">
+    <div class="col">
+    <ul class="nav nav-pills" id="menuTab" role="tablist">
+        {% for prodClass in prodclassList %}
+        <li class="nav-item" role="presentation">
+        <button class="nav-link" id="{{ forloop.counter0 }}-tab" data-bs-toggle="tab" data-bs-target="#{{ prodClass.grouper|cut:' ' }}" type="button" role="tab" aria-controls="{{ prodClass.grouper|cut:' ' }}" aria-selected="true">{{ prodClass.grouper }}</button>
+        </li>
+        {% endfor %}
+    </ul>
+
+<!-- Tab content -->
+    <div class="tab-content" id="menuTabContent">
+        {% for prodClass in prodclassList %}
+        <div class="tab-pane fade" id="{{ prodClass.grouper|cut:' ' }}" role="tabpanel" aria-labelledby="{{ forloop.counter0 }}-tab">
+            <div class="row">
+            {% for item in prodClass.list %}
+            <!-- Cards -->
+            <div class="col-md-6">
+                <div class="card mt-3" id="card_{{ item.0 }}" style="background-color: {{ item.1.product.prodclassQuery.classColor }}">
+                    <div class="row">
+                        <div class="col-9">
+                            <div class="card-body position-relative">
+                                <span class="badge rounded-pill position-absolute top-0 start-0 translate-middle-y {% if item.1.product.prodStock == 0 %}bg-danger{% else %}bg-primary{% endif %}">
+                                    {{ item.1.product.prodStock|floatformat:"-2" }}
+                                </span>
+                                <h5 class="card-title">{{ item.1.product }}</h5>
+                                <p class="card-text">{% trans 'Price:' %} {{ item.1.product.prodPrice }}</p>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="row px-3">
+                                <a type="button" class="btn btn-link" onclick="incrementValue('id_{{ item.0 }}')"><span style="color: green;"><i class="fa-solid fa-chevron-up"></i></span></a>
+                                <input type="number" class="form-control" name="{{ item.0 }}" value="0" min="0" id="id_{{ item.0 }}" style="text-align: center;">
+                                <a type="button" class="btn btn-link" onclick="decreaseValue('id_{{ item.0 }}')"><span style="color: red;"><i class="fa-solid fa-chevron-down"></i></span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="fixed-bottom d-flex justify-content-center p-3">
+        <a type="button" class="btn btn-danger btn-lg" href="{%url 'urlOrders' %}"><i class="fa-solid fa-xmark"></i><span class="ms-2 d-sm-inline">{% trans 'Cancel' %}</span></a>
+        <button type="submit" class="btn btn-success btn-lg" id="btnCreate" name="btnCreate"><i class="fa-solid fa-check" id="checkIcon"></i>
+            <span class="spinner-border spinner-border-sm m-1 d-none" role="status" id="spinner"></span>{% trans 'Create' %}
+        </button>
+    </div>
+</div>
+
+</form>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var firstTab = document.getElementById('0-tab');
+    var tab = new bootstrap.Tab(firstTab);
+    tab.show();
+});
+
+function incrementValue(elem_id)
+{
+    //alert(elem_id);
+    //console.log("Element clicked:", elem_id)
+    let inputQty = document.getElementById(elem_id);
+    let currentValue = parseInt(inputQty.value, 10);
+    currentValue = isNaN(currentValue) ? 0 : currentValue;
+    currentValue++;
+    inputQty.value = currentValue;
+};
+
+function decreaseValue(elem_id)
+{
+    //alert(elem_id);
+    let inputQty = document.getElementById(elem_id);
+    let currentValue = parseInt(inputQty.value, 10);
+    currentValue = isNaN(currentValue) ? 0 : currentValue;
+    currentValue--;
+    if (currentValue < 0) {
+        alert("{% trans 'Quantity already set to ZERO !' %}");
+        inputQty.value = 0;
+    } else {
+        inputQty.value = currentValue;
+    }
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+  const createButton = document.getElementById('btnCreate');
+  const spinner = document.getElementById('spinner');
+  const checkIcon = document.getElementById('checkIcon');
+
+  createButton.addEventListener('click', function() {
+    spinner.classList.remove('d-none');
+    checkIcon.classList.add('d-none');
+    
+    setTimeout(function() {
+      spinner.classList.add('d-none');
+      checkIcon.classList.remove('d-none');
+    }, 15000);
+  });
+
+  window.addEventListener('load', function() {
+    checkIcon.classList.remove('d-none');
+    spinner.classList.add('d-none');
+  });
+});
+
+function getContrastYIQ(hexcolor){
+    var r = parseInt(hexcolor.substr(1,2),16);
+    var g = parseInt(hexcolor.substr(3,2),16);
+    var b = parseInt(hexcolor.substr(5,2),16);
+    var yiq = ((r*299)+(g*587)+(b*114))/1000;
+    return (yiq >= 128) ? 'black' : 'white';
+};
+
+const cards = document.querySelectorAll('[id^="card_prodQuery_"]');
+cards.forEach(card => {
+    const bgColor = window.getComputedStyle(card).backgroundColor;
+    const rgb = bgColor.match(/\d+/g);
+    const hexColor = `#${((1 << 24) + (parseInt(rgb[0]) << 16) + (parseInt(rgb[1]) << 8) + parseInt(rgb[2])).toString(16).slice(1)}`;
+    const textColor = getContrastYIQ(hexColor);
+    console.log(bgColor, hexColor, textColor)
+    card.style.color = textColor;
+});
+
+</script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% endblock %}

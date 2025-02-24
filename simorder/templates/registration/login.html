@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends 'base.html' %}
+    {% load i18n static %}
+    <title>{% block title %} {% trans "Make2Order: Login" %} {% endblock %}</title>
+</head>
+<body>
+{% block content %}
+
+  {% if form.errors %}
+    <div class="mb-3"><small class="text-danger"><i class="fa-solid fa-triangle-exclamation pe-2"></i>{% trans "Your username and password didn't match. Please try again." %}</small></div>
+  {% endif %}
+
+  {% if next %}
+    {% if user.is_authenticated %}
+      <div class="mb-3"><small class="text-danger"><i class="fa-solid fa-triangle-exclamation pe-2"></i>
+        {% trans "Your account doesn't have access to this page. To proceed, please login with an account that has access." %}</small>
+      </div>
+    {% else %}
+      <div class="mb-3"><small class="text-danger"><i class="fa-solid fa-triangle-exclamation pe-2"></i>{% trans "Please login to see this page." %}</small></div>
+    {% endif %}
+  {% endif %}
+
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      <label for="{{ form.username.auto_id }}" class="form-label">{{ form.username.label_tag }}</label>
+      <input type="text" class="form-control" name="{{ form.username.name }}" id="{{ form.username.auto_id }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.password.auto_id }}" class="form-label">{{ form.password.label_tag }}</label>
+      <input type="password" class="form-control" name="{{ form.password.name }}" id="{{ form.password.auto_id }}" required></input>
+    </div>
+    <div class="mb-3">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button type="submit" class="btn btn-secondary" value="login"><i class="fa-solid fa-right-to-bracket"></i>&nbsp;&nbsp;Login</button>
+    </div>
+  </form>
+
+    <div class="mb-3">
+      {# Assumes you set up the password_reset view in your URLconf #}
+      <p><a href="{% url 'customadmin:login_password_reset' %}">{% trans "Lost password?" %}</a></p>
+      {% comment %}
+      {% endcomment %}
+      
+    </div>
+
+{% endblock content %}
+</body>
+</html>

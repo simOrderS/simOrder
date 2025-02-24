@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load i18n static custom_tags %}
+
+{% block title %} {% trans 'simOrder: My Orders' %} {% endblock %}
+
+{% block content %}
+<h3>{% trans 'My open orders' %}</h3>
+
+{% if orders_products %}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>                
+                <th>{% trans 'Table' %}</th>
+                <th>{% trans 'Order' %}</th>
+                <th>{% trans 'Actions' %}</th>
+                <th>{% trans 'Time' %}</th>
+                <th>{% trans 'Product' %}</th>
+                <th>{% trans 'Price' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Status' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders_products %}
+                <tr>                    
+                    <td rowspan="{{ order.products|length|add:2 }}">
+                        <a href="/orders/update/{{ order.id }}">{{ order.orderTable }}</a></td>
+                    <td rowspan="{{ order.products|length|add:2 }}">{{ order.id }}</td>
+                    <td rowspan="{{ order.products|length|add:2 }}">
+                        <div class="btn-group flex-wrap">
+                        <a type="button" class="btn btn-link" title="{% trans 'Update' %}" href="/orders/update/{{ order.id }}"><span style="color: orange;"><i class="fa-solid fa-pen"></i></span></a>
+                        <a type="button" class="btn btn-link" title="{% trans 'Close' %}" href="/orders/close/{{ order.id }}"><span style="color: green;"><i class="fa-solid fa-dollar-sign"></i></span></a></div>
+                    </td>
+                    <td rowspan="{{ order.products|length|add:2 }}">{{ order.orderDtOpen|timesince }}</td>
+    
+                    {% for prod in order.products %}
+                    <tr>
+                        <td>{{ prod.poProdDescription }}</td>
+                        <td>{{ prod.poProdPrice }}</td>
+                        <td style="text-align:center;">{{ prod.poQty_ }}</td>
+                            {% if prod.poStatus == 1 %}
+                            <td><span style="color: green;"><i class="fa-regular fa-lock"></span></i></td>    
+                            {% else %}
+                            <td><span style="color: red;"><i class="fa-solid fa-lock-open"></span></i></td>     
+                            {% endif %}
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <th>{{ order.total.poProdDescription }}</th>
+                        <th>{{ order.total.poProdPrice }}</th>
+                        <th style="text-align:center;">{{ order.total.poQty }}</th>
+                        <th></th>
+                    </tr>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>    
+</div>
+{% else %}
+    <p class="text-danger">{% trans 'No orders found.' %}</p>
+{% endif %}
+
+{% comment %}
+<!--<div class="row">
+    <div class="fixed-bottom d-flex justify-content-center p-3">
+        <a type="button" class="btn btn-success btn-lg" title="New Order" href="{%url 'urlCreateOrder' menu.id %}"><i class="fa-solid fa-plus"></i>&nbsp;&nbsp;New order</a>
+    </div>
+</div>-->
+{% endcomment %}
+
+<div class="row fixed-bottom p-3">
+    <div class="col-12 d-flex flex-column align-items-center">
+        {% if active_menus %}
+        <div class="mb-2 d-flex align-items-center">
+            <i class="fa-solid fa-plus me-2"></i>
+            <span>{% trans 'New Order:' %}</span>
+        </div>
+        <div class="btn-group" role="group" aria-label="Menu Buttons">
+            {% for menu in active_menus %}
+            <a type="button" class="btn btn-success btn-lg {% if not forloop.last %}me-1{% endif %}" title="{% trans 'New Order' %}" href="{% url 'urlCreateOrder' menu.id %}">{{ menu.menuDescription }}</a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-danger">{% trans 'No active Menus found.' %}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock content %}

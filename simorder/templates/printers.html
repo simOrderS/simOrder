@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% load i18n static custom_tags %}
+
+{% block title %} {% trans 'simOrder: Printer Settings' %} {% endblock %}
+
+{% block content %}
+<h3>{% trans 'Printers' %}</h3>
+<!-- Messages -->
+{% if messages %}
+{% for message in messages %}
+<div class="row mt-3">
+    <div class="col">
+        {% if message.tags == "success" %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "warning" %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation"></i>&nbsp;&nbsp;{{ message }}
+        {% elif message.tags == "error" %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-xmark"></i>&nbsp;&nbsp;{{ message }}
+        {% endif %}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans 'Close' %}"></button></div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- USB interface -->
+<form method="get" class="form-inline my-2 my-lg-0" id="formSearchUSB">
+{% csrf_token %}
+<h5><i class="fa-brands fa-usb"><span class="ms-2 d-none d-sm-inline"></span></i>{% trans 'USB' %}</h5>
+
+{% if not listAllUSB %}
+<div class="row">
+    <div class="col-auto">
+        <p class="text-primary ms-2">{% trans 'No USB devices installed or available for install.' %}</span></p>
+    </div>
+</div>
+{% else %}
+<div class="row" id="statusUSB">
+    <div class="table-responsive">
+        <table class="table fixed-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">{% trans 'Name' %}</th>
+                <th style="width: 25%;">{% trans 'Status' %}</th>
+                <th style="width: 25%;">{% trans 'Action' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in listAllUSB %}
+            <tr>
+                <td><label for="{{ form.prodQuery.html_name }}" type="text" name="{{ form.prodQuery.html_name }}">{{ item.printName }}</label></td>
+                {% if item.printStatus == 0 %}
+                <td style="color: gray;">{% trans 'not connected' %}</td>
+                <td><button type="submit" class="btn btn-outline-danger" name="delete_USB" value="{{ item.id }}" onclick="return confirm ('Printer will be deleted. Confirm?')">
+                    <i class="fa-solid fa-trash"></i></button></td>
+                {% elif item.printStatus == 1 %}
+                <td style="color: green;">{% trans 'connected' %}</td>
+                <td><button type="submit" class="btn btn-outline-success" disabled><i class="fa-solid fa-print"></i></button></td>
+                {% else %}
+                <td style="color: green;">{% trans 'available' %}</td>
+                <td><button type="submit" class="btn btn-outline-success" name="install_USB" value="{{ item }}" onclick="return confirm ('Printer will be installed. Confirm?')">
+                    <i class="fa-solid fa-plus"></i></button></td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+</form>
+
+<!-- Bluetooth interface -->
+<h5><i class="fa-brands fa-bluetooth"><span class="ms-2 d-none d-sm-inline"></span></i>{% trans 'Bluetooth' %}</h5>
+
+<form method="get" class="form-inline my-2 my-lg-0" id="formBTToggle" action="{% url 'urlPrinters' %}">
+{% csrf_token %}
+<div class="row">
+    <div class="col-auto">
+        <div class="form-check form-switch">
+            {% if statusBT %}
+            <input class="form-check-input" type="checkbox" id="toggle_BT" name="toggle_BT" role="switch" checked onclick="this.form.submit()">
+            <input type="hidden" name="toggle_BT" value="on">
+            <label class="form-check-label" for="toggle_BT"><span style="color: green;">{% trans 'Adapter ON' %}</span></label>
+            {% elif not statusBT %}
+            <input class="form-check-input" type="checkbox" id="toggle_BT" name="toggle_BT" role="switch" onclick="this.form.submit()">
+            <input type="hidden" name="toggle_BT" value="off">
+            <label class="form-check-label" for="toggle_BT"><span style="color: red;">{% trans 'Adapter OFF' %}</span></label>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</form>
+
+{% if statusBT %}
+{% if not listBTPaired %}
+<div class="row">
+    <div class="col-auto">
+        <p class="text-primary ms-2 mt-1">{% trans 'No bluetooth devices installed.' %}</span></p>
+    </div>
+</div>
+{% endif %}
+
+<form method="get" class="form-inline my-2 my-lg-0">
+{% csrf_token %}
+{% if listBTPaired %}
+<div class="row">
+    <div class="table-responsive">
+        <table class="table fixed-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">{% trans 'Name' %}</th>
+                <th style="width: 25%;">{% trans 'Status' %}</th>
+                <th style="width: 25%;">{% trans 'Action' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in listBTPaired %}
+            <tr>
+                <td><label for="{{ form.prodQuery.html_name }}" type="text" name="{{ form.prodQuery.html_name }}">{{ item.Name }}</label></td>
+                {% if item.Paired == 1 %}
+                <td style="color: green;">{% trans 'connected' %}</td>
+                <td><button type="submit" class="btn btn-outline-danger" name="delete_BT" value="{{ item }}" onclick="return confirm ('Printer will be deleted. Confirm?')">
+                    <i class="fa-solid fa-trash"></i></button></td>                
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+</form>
+
+<form method="get" class="form-inline my-2 my-lg-0" id="formSearchBT">
+    {% csrf_token %}
+    <div class="col-auto">
+        <button class="btn btn-outline-secondary btn-sm" type="submit" id="btnSearchBT" name="btnSearchBT"><i class="fa-solid fa-magnifying-glass" id="searchIcon"></i>
+            <span class="spinner-border spinner-border-sm d-none" role="status" id="spinner"></span>
+        </button>
+        <label>{% trans 'List available bluetooth devices' %}</label>
+    </div>
+</form>
+
+
+
+<form method="get" class="form-inline my-2 my-lg-0">
+{% csrf_token %}
+{% if listBTAvailable %}
+<div class="row" id="containerDevices">
+    <div class="table-responsive">
+        <table class="table fixed-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">{% trans 'Name' %}</th>
+                <th style="width: 25%;">{% trans 'Status' %}</th>
+                <th style="width: 25%;">{% trans 'Action' %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in listBTAvailable %}
+        <tr>
+            <td><label for="{{ form.prodQuery.html_name }}" type="text" name="{{ form.prodQuery.html_name }}">{{ item.Name }}</label></td>
+            {% if item.Paired == 0 %}
+            <td style="color: green;">{% trans 'available' %}</td>
+            <td><button type="submit" class="btn btn-outline-success" name="install_BT" value="{{ item }}" onclick="return confirm ('Printer will be installed. Confirm?')">
+                <i class="fa-solid fa-plus"></i></button></td>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+</form>
+{% endif %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const loadButton = document.getElementById('btnSearchBT');
+  const spinner = document.getElementById('spinner');
+  const content = document.getElementById('containerDevices');
+  const searchIcon = document.getElementById('searchIcon');
+
+  loadButton.addEventListener('click', function() {
+    spinner.classList.remove('d-none');
+    searchIcon.classList.add('d-none');
+    
+    setTimeout(function() {
+      spinner.classList.add('d-none');
+      searchIcon.classList.remove('d-none');
+      content.textContent = 'Content loaded!';
+    }, 30000);
+  });
+
+  window.addEventListener('load', function() {
+    searchIcon.classList.remove('d-none');
+    spinner.classList.add('d-none');
+  });
+});
+</script>
+{% endblock content %}

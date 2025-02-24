@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load i18n static custom_tags %}
+
+{% block title %} {% trans 'simOrder: Home' %} {% endblock %}
+
+{% block content %}
+<h3>{% trans 'Getting started:' %}</h3>
+
+<div class="row">
+    <div class="list-group list-group-flush list-group-numbered">
+        <a href="{% url 'urlSettings' %}" class="list-group-item list-group-item-action">{% trans "Fill-in your company data and basic information" %}</a>
+        <a href="{% url 'urlPrinters' %}" class="list-group-item list-group-item-action">{% trans "Install a USB or Bluetooth printer" %}</a>
+        <a href="{% url 'admin:custom_simorder' %}" class="list-group-item list-group-item-action">{% trans "Create your Product Classes, Products and Menus" %}</a>
+        <a href="{% url 'admin:custom_auth' %}" class="list-group-item list-group-item-action">{% trans "If necessary, create and manage Users and/ or Groups" %}</a>
+        <a href="{% url 'urlOrders' %}" class="list-group-item list-group-item-action">{% trans "Create and manage Orders" %}</a>
+        <a class="list-group-item list-group-item-action">{% trans "Enjoy using simOrder !" %}</a>
+    </div>
+</div>
+
+{% endblock content %}
