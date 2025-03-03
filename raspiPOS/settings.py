@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 import environ
+from dotenv import load_dotenv
 from pathlib import Path
 from django.core.exceptions import ImproperlyConfigured
 
@@ -32,8 +33,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+load_dotenv()
 env = environ.Env()
-environ.Env.read_env()  # Reads the .env file
+environ.Env.read_env()
+
 SECRET_KEY = env('SECRET_KEY')
 if SECRET_KEY is None:
     raise ImproperlyConfigured("SECRET_KEY environment variable not defined")
