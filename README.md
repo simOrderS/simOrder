@@ -1,3 +1,5 @@
+![Alt Text]([simOrder/static/img/simorder_logo.png](https://github.com/simOrderS/simOrder/tree/main/static/img#:~:text=last%20week-,simOrder_logo.png,-Initial%20commit))
+
 # simOrder
 A Raspberry Pi based order management and POS system for small businesses
 
