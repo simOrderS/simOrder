@@ -9,27 +9,25 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 
 ## ✨ Features
 
-- **Intuitive Interface**: Easy-to-use touchscreen interface for quick sales processing
-- **Inventory Management**: Keep track of stock levels and receive low stock alerts
-- **Order Management**: Manage customer orders, from creation to fulfillment
-- **Customer Database**: Store and manage customer information for personalized service
-- **Reporting**: Generate sales reports and analyze business performance
+- **Intuitive Interface**: Easy-to-use touchscreen interface suitable for tables and smartphones
+- **Inventory Management**: Keep track of stock levels when placing customer orders
+- **Order Management**: Manage and send (print) customer orders to production
 - **Multi-user Support**: Different access levels for managers and staff
-- **Receipt Printing**: Compatible with thermal receipt printers
-- **Barcode Scanning**: Support for USB barcode scanners
+- **Receipt Printing**: Compatible with ESC/POS thermal receipt printers
+- **Reporting**: Generate sales reports and analyze business performance
 
 ## 🛠️ Hardware Requirements
 
-- Raspberry Pi 4 (4GB RAM recommended)
-- 7" Touchscreen Display
+- Raspberry Pi 4 4GB RAM (recommended, tested also on a Pi 3 A+)
+- 7" iOS or Android tablet connected to your local network
 - ESC/POS Thermal Receipt Printer (app configured for a 58 mm)
 - SD Card (32GB recommended)
 
 ## 💻 Software Stack
 
-- Raspberry Pi OS (64-bit)
+- Raspberry Pi OS (64-bit) connected to your local network
 - Python 3.9+
-- Flask web framework
+- Django web framework
 - SQLite database
 - HTML5, CSS3, and JavaScript for the frontend
 
