@@ -12,9 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 import environ
-from dotenv import load_dotenv
 from pathlib import Path
-from django.core.exceptions import ImproperlyConfigured
 
 def get_ip_address():
     ip_address = os.popen('hostname -I').read().strip()
@@ -32,14 +30,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-load_dotenv()
+# Initialize environ to handle environment variables
 env = environ.Env()
 environ.Env.read_env()
 
-SECRET_KEY = env('SECRET_KEY')
-if SECRET_KEY is None:
-    raise ImproperlyConfigured("SECRET_KEY environment variable not defined")
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = env('SECRET_KEY')  # Automatically fetch SECRET_KEY from the environment variables
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
