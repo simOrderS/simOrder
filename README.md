@@ -23,14 +23,6 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 - ESC/POS USB and/ or Bluetooth Thermal Receipt Printer (app configured for a 58 mm)
 - SD Card (32GB recommended)
 
-## 💻 Software Stack
-
-- Raspberry Pi OS (64-bit) connected to your local network
-- Python 3.9+
-- Django web framework
-- SQLite database
-- HTML5, CSS3, and JavaScript for the frontend
-
 ## 📸 Video Demos
 
 To add screenshots, upload your images to your repository or another hosting service and replace the placeholder links below with the actual URLs.
@@ -40,6 +32,8 @@ To add screenshots, upload your images to your repository or another hosting ser
 | ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
 
 ## 🚀 Install
+
+In a Raspberry Pi (ideally) with a fresh PI OS install and connected to your local network:
 
 1. Clone the repository:
 
