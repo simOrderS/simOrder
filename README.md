@@ -1,4 +1,4 @@
-![simOrder Logo](static/img/simorder_logo.png)
+![simOrder Logo](..static/img/simorder_logo.png)
 
 # simOrder
 A Raspberry Pi based order management and POS system for small businesses
