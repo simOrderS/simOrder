@@ -35,9 +35,9 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 
 To add screenshots, upload your images to your repository or another hosting service and replace the placeholder links below with the actual URLs.
 
-| Login and System Settings | MasterData | Order  | Order Tracking |
-|:-------------:|:--------------------:|:--------------:|:--------------:|
-| ![POS](link-to-pos-image) | ![Inventory](link-to-inventory-image) | ![Orders](link-to-orders-image) | ![Orders](link-to-orders-image) |
+| Login and System Settings | Printers | MasterData  | Users and Groups | Order Management | Analytics |
+|:-------------:|:--------------------:|:--------------:|:--------------:|:--------------:|:--------------:|
+| ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
 
 ## 🚀 Install
 
