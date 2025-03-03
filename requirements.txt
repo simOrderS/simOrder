@@ -5,7 +5,6 @@ django-environ==0.12.0
 django-filter==24.2
 fontawesomefree==6.5.1
 PyGObject==3.48.2
-python-dotenv==1.0.1
 python-escpos==3.1
 pyusb==1.2.1
 sqlparse==0.5.0
