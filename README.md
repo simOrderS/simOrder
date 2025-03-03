@@ -31,7 +31,7 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 - SQLite database
 - HTML5, CSS3, and JavaScript for the frontend
 
-## 📸 Screenshots
+## 📸 Video Demos
 
 To add screenshots, upload your images to your repository or another hosting service and replace the placeholder links below with the actual URLs.
 
@@ -39,7 +39,7 @@ To add screenshots, upload your images to your repository or another hosting ser
 |:-------------:|:--------------------:|:--------------:|
 | ![POS](link-to-pos-image) | ![Inventory](link-to-inventory-image) | ![Orders](link-to-orders-image) |
 
-## 🚀 Quick Start
+## 🚀 Install
 
 1. Clone the repository:
 
