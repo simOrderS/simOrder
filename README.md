@@ -47,8 +47,9 @@ To add screenshots, upload your images to your repository or another hosting ser
 git clone https://github.com/simOrderS/simOrder.git
 ```
 
-2. Execute the bash script to install all dependencies and configure Django and Apache:
+2. Run the bash script in the `simOrder` folder to install dependencies and configure Django and Apache:
 ```bash
 bash install.sh
 ```
-   
+
+3. Access the application via `http://simorder.local` or via `http://<your-pi-ip-address>` on Android 11 or lower devices.
