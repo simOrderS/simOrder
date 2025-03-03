@@ -24,6 +24,7 @@ sudo apt install libapache2-mod-wsgi-py3 -y
 sudo apt install python3 python3-venv python3-pip -y
 sudo apt install build-essential libdbus-glib-1-dev libgirepository1.0-dev libpython3-dev libdbus-1-dev -y
 sudo apt install libcairo2-dev pkg-config python3-dev libgirepository1.0-dev -y
+sudo apt-get clean
 
 # Create and activate virtual environment
 print_header "Creating virtual environment"
