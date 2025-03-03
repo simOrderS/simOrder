@@ -45,10 +45,6 @@ fi
 
 # Install project dependencies
 print_header "Installing project dependencies"
-
-sudo chown -R $USER:$USER $(pwd)/venv
-sudo chmod -R u+rwX $(pwd)/venv
-
 if [ -f "requirements.txt" ]; then
     if pip3 install -r requirements.txt; then
         echo "Python dependencies successfully installed"
