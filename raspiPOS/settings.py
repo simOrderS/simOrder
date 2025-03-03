@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 import environ
 from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 def get_ip_address():
     ip_address = os.popen('hostname -I').read().strip()
