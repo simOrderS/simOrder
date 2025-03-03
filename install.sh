@@ -38,6 +38,10 @@ print_header "Activating virtual environment"
 source venv/bin/activate
 if [[ $? -eq 0 ]]; then
     echo "Virtual environment successfully activated"
+    which python
+    python --version
+    which pip
+    pip --version
 else
     echo "Error: Failed to activate the virtual environment"
     exit 1
@@ -48,16 +52,11 @@ print_header "Installing project dependencies"
 if [ -f "requirements.txt" ]; then
     # Ensure pip is installed and up-to-date
     echo "Ensuring pip is installed and up-to-date..."
-    python3 -m ensurepip --upgrade
-
-    # Activate the virtual environment and check if pip3 is available
-    if ! source venv/bin/activate || ! command -v pip &> /dev/null; then
-        echo "Error: pip is not available in the virtual environment. Exiting."
-        exit 1
-    fi
+    python -m ensurepip --upgrade
+    python -m pip install --upgrade pip
 
     # Now, try installing the dependencies
-    if pip install -r requirements.txt; then
+    if python -m pip install -r requirements.txt; then
         echo "Python dependencies successfully installed"
     else
         echo "Error: Failed to install Python dependencies"
