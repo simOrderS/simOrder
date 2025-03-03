@@ -69,6 +69,7 @@ fi
 
 # Write the secret key to .env file
 echo "SECRET_KEY=$SECRET_KEY" >> .env
+sudo chmod 644 $(pwd)/.env
 echo "Django secret key generated and saved to .env file"
 echo "Please ensure the .env file is secured and not exposed publicly."
 
