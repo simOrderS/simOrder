@@ -24,8 +24,7 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 
 - Raspberry Pi 4 (4GB RAM recommended)
 - 7" Touchscreen Display
-- Thermal Receipt Printer
-- USB Barcode Scanner
+- ESC/POS Thermal Receipt Printer (app configured for a 58 mm)
 - SD Card (32GB recommended)
 
 ## 💻 Software Stack
