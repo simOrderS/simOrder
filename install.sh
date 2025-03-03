@@ -50,14 +50,14 @@ if [ -f "requirements.txt" ]; then
     echo "Ensuring pip is installed and up-to-date..."
     python3 -m ensurepip --upgrade
 
-    # Check if pip3 is available after ensurepip
-    if ! command -v pip3 &> /dev/null; then
-        echo "Error: pip3 not found. Exiting."
+    # Activate the virtual environment and check if pip3 is available
+    if ! source venv/bin/activate || ! command -v pip &> /dev/null; then
+        echo "Error: pip is not available in the virtual environment. Exiting."
         exit 1
     fi
 
     # Now, try installing the dependencies
-    if pip3 install -r requirements.txt; then
+    if pip install -r requirements.txt; then
         echo "Python dependencies successfully installed"
     else
         echo "Error: Failed to install Python dependencies"
