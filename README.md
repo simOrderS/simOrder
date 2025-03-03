@@ -23,6 +23,30 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 - ESC/POS USB and/ or Bluetooth Thermal Receipt Printer (app configured for a 58 mm)
 - SD Card (32GB recommended)
 
+## 🚀 Install
+
+In a Raspberry Pi (ideally) with a fresh Pi OS install and connected to your local network:
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/simOrderS/simOrder.git
+cd simOrder
+```
+
+2. Run the bash script in the `simOrder` folder to install dependencies and configure Django and Apache:
+```bash
+bash install.sh
+```
+
+## Usage
+
+Access the application via `http://simorder.local` or via `http://<your-pi-ip-address>` on Android 11 or lower devices.
+
+Log in using the initial credentials: user: `admin` and password: `admin`. You can (and should) change it later in the application).
+
+Follow the configuration steps at the **home** page.
+
 ## 📸 Video Demos
 
 To add screenshots, upload your images to your repository or another hosting service and replace the placeholder links below with the actual URLs.
@@ -31,19 +55,11 @@ To add screenshots, upload your images to your repository or another hosting ser
 |:-------------:|:--------------------:|:--------------:|:--------------:|:--------------:|:--------------:|
 | ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
 
-## 🚀 Install
+## 🧩 Contributing
 
-In a Raspberry Pi (ideally) with a fresh PI OS install and connected to your local network:
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-1. Clone the repository:
+## ⚖️ License
 
-```bash
-git clone https://github.com/simOrderS/simOrder.git
-```
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-2. Run the bash script in the `simOrder` folder to install dependencies and configure Django and Apache:
-```bash
-bash install.sh
-```
-
-3. Access the application via `http://simorder.local` or via `http://<your-pi-ip-address>` on Android 11 or lower devices.
