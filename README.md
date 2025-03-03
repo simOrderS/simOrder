@@ -1,7 +1,7 @@
-<div class="logo-container">
+<center>
   <img src="static/img/simOrder_logo.png" alt="simOrder Logo" width="150" height="auto">
   <h1>simOrder</h1>
-</div>
+</center>
 
 # A Raspberry Pi-based Order Management and POS System
 
