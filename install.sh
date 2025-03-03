@@ -46,6 +46,17 @@ fi
 # Install project dependencies
 print_header "Installing project dependencies"
 if [ -f "requirements.txt" ]; then
+    # Ensure pip is installed and up-to-date
+    echo "Ensuring pip is installed and up-to-date..."
+    python3 -m ensurepip --upgrade
+
+    # Check if pip3 is available after ensurepip
+    if ! command -v pip3 &> /dev/null; then
+        echo "Error: pip3 not found. Exiting."
+        exit 1
+    fi
+
+    # Now, try installing the dependencies
     if pip3 install -r requirements.txt; then
         echo "Python dependencies successfully installed"
     else
