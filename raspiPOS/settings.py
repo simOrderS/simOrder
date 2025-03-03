@@ -37,6 +37,7 @@ environ.Env.read_env()
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
+print('SECRET KEY', SECRET_KEY)
 if not SECRET_KEY:
     raise ImproperlyConfigured("SECRET_KEY environment variable not defined")
 
