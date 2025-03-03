@@ -46,7 +46,7 @@ fi
 # Install project dependencies
 print_header "Installing project dependencies"
 if [ -f "requirements.txt" ]; then
-    if pip3 install -r requirements.txt; then
+    if python3 -m pip install -r requirements.txt; then
         echo "Python dependencies successfully installed"
     else
         echo "Error: Failed to install Python dependencies"
