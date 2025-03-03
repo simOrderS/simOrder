@@ -1,9 +1,9 @@
 ![simOrder Logo](static/img/simorder_logo.png)
 
 # simOrder
-# A Raspberry Pi-based Order Management and POS System for small business
+# A Raspberry Pi-based Order Management and POS System
 
-RaspberryPOS is an affordable, open-source Point of Sale (POS) and Order Management System designed for small businesses. Built on a Raspberry Pi, it offers a cost-effective solution for managing sales, inventory, and customer orders.
+simOrder is an affordable, open-source Order Management and Point of Sale (POS) System designed for small businesses. Built on a Raspberry Pi, it offers a cost-effective solution for inventory, customer orders and sales.
 
 ## ✨ Features
 
