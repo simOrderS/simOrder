@@ -11,7 +11,7 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 
 ## ✨ Features
 
-- **Intuitive POS Interface**: Easy-to-use touchscreen interface for quick sales processing
+- **Intuitive Interface**: Easy-to-use touchscreen interface for quick sales processing
 - **Inventory Management**: Keep track of stock levels and receive low stock alerts
 - **Order Management**: Manage customer orders, from creation to fulfillment
 - **Customer Database**: Store and manage customer information for personalized service
