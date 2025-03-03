@@ -43,6 +43,10 @@ else
     exit 1
 fi
 
+sudo chown -R $USER:$USER /home/dubaleeiro/simOrder/venv
+sudo chmod -R u+rwX /home/dubaleeiro/simOrder/venv
+
+
 # Install project dependencies
 print_header "Installing project dependencies"
 if [ -f "requirements.txt" ]; then
