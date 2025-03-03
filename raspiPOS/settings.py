@@ -12,24 +12,36 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def get_ip_address():
+    ip_address = os.popen('hostname -I').read().strip()
+    return ip_address.split()[0]
+
+# Get the IP address
+host_ip = get_ip_address()
+
+# Add the IP address dynamically to ALLOWED_HOSTS
+ALLOWED_HOSTS = ['localhost', 'simorder.local', host_ip]
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!0-+$ax-x9l(2e*ol-#yoc_#rl&tup-h4y=kl=ugp=)n$%=+0x'
+SECRET_KEY = os.environ.get('SECRET_KEY')
+if SECRET_KEY is None:
+    raise ImproperlyConfigured("SECRET_KEY environment variable not defined")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['localhost', 'simorder.local']
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Application definition
-
 INSTALLED_APPS = [
     'simorder.apps.simOrderConfig',
     'django.contrib.admin',
@@ -109,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Berlin'
 
 USE_I18N = True
 
@@ -121,11 +133,11 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, 'static'),
+#]
 
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

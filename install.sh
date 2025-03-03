@@ -2,45 +2,13 @@
 
 # Function to print section headers
 print_header() {
-    echo "----------------------------------------"
+    echo "-------------------------------------------------------------------------"
     echo "$1"
-    echo "----------------------------------------"
+    echo "-------------------------------------------------------------------------"
 }
 
 # Variables
-current_user=$USER
-current_path=$(pwd)
-current_app='simorder'
-
-# Check if file structure has been correctly copied from development drive
-print_header "IMPORTANT:"
-echo "Make sure all file structures from the Django project and app are copied correctly before proceeding."
-echo "Please verify that the following directory structure exists:"
-echo "/home/$current_user/raspiPOS/"
-echo "    ├── install.sh"
-echo "    ├── db.sqlite3.py"
-echo "    ├── manage.py"
-echo "    ├── requirements.txt"
-echo "    ├── raspiPOS/"
-echo "    |   ├── ..."
-echo "    └── simorder/"
-echo "    |   ├── ..."
-echo "    └── static/"
-echo "    |   ├── ..."
-
-read -p "Have you verified the file structure? (y/n): " answer
-
-if [[ $answer != "y" ]]; then
-    echo "Please copy the correct file structure and run the script again."
-    exit 1
-fi
-
-echo "Proceeding with the setup..."
-
-# Change comitup name
-print_header "Changing comitup name"
-sudo comitup-cli n $current_app
-echo "Comitup hostname updated to $current_app"
+HOSTNAME='simorder'
 
 # Update Raspberry Pi
 print_header "Updating Raspberry Pi"
@@ -53,92 +21,137 @@ sudo apt install apache2 -y
 # Install additional packages
 print_header "Installing additional packages"
 sudo apt install libapache2-mod-wsgi-py3 -y
-sudo apt-get install libjpeg-dev -y
 sudo apt install python3 python3-venv python3-pip -y
+sudo apt install build-essential libdbus-glib-1-dev libgirepository1.0-dev libpython3-dev libdbus-1-dev -y
+sudo apt install libcairo2-dev pkg-config python3-dev libgirepository1.0-dev -y
 
 # Create and activate virtual environment
 print_header "Creating virtual environment"
-python3 -m venv venv
+if python3 -m venv venv; then
+    echo "Virtual environment successfully created"
+else
+    echo "Error: Failed to create the virtual environment"
+    exit 1
+fi
+
+print_header "Activating virtual environment"
 source venv/bin/activate
+if [[ $? -eq 0 ]]; then
+    echo "Virtual environment successfully activated"
+else
+    echo "Error: Failed to activate the virtual environment"
+    exit 1
+fi
 
 # Install project dependencies
 print_header "Installing project dependencies"
-pip3 install -r requirements.txt
-
-# Update Apache configuration file
-print_header "Configuring Apache"
-config_file="/etc/apache2/sites-enabled/000-default.conf"
-master_file="/home/$current_user/raspiPOS/000-default.conf"
-
-# a. Check if the file exists
-if [[ ! -f "$config_file" ]]; then
-    echo "Error: $config_file does not exist."
+if [ -f "requirements.txt" ]; then
+    if pip3 install -r requirements.txt; then
+        echo "Python dependencies successfully installed"
+    else
+        echo "Error: Failed to install Python dependencies"
+        echo "Please check the error messages and requirements.txt file"
+        exit 1
+    fi
+else
+    echo "Error: requirements.txt not found. Exiting."
     exit 1
 fi
 
-# b. Create a backup of the original file
-sudo cp "$config_file" "$config_file.bak"
+# Generate a secret key and write to .env file
+print_header "Generating Django Secret Key"
 
-# c. Move the master file to the config file
-sudo mv "$master_file" "$config_file"
+SECRET_KEY=$(python3 -c 'import random; import string; print("".join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=50)))')
 
-echo "Config file $config_file successfully updated"
+# Check if .env file exists, create it if not
+if [ ! -f ".env" ]; then
+    touch .env
+fi
 
-# d. Force WSGI application to run within (main) Python interpreter
-config_file="/etc/apache2/apache2.conf"
-command_to_add="WSGIApplicationGroup %{GLOBAL}"
+# Write the secret key to .env file
+echo "SECRET_KEY=$SECRET_KEY" >> .env
+echo "Django secret key generated and saved to .env file"
+echo "Please ensure the .env file is secured and not exposed publicly."
 
-# e. Check if the file exists
-if [[ ! -f "$config_file" ]]; then
-    echo "Error: $config_file does not exist."
+# Update Apache Configuration File 1
+print_header "Configuring Apache - Site Configuration"
+APACHE_CONFIG_FILE_1="/etc/apache2/sites-available/000-default.conf"
+FILENAME=$(basename "$APACHE_CONFIG_FILE_1")
+DIRECTORY=$(dirname "$APACHE_CONFIG_FILE_1")
+
+# a. Create config file for site (000-default.conf)
+cat <<EOF > $FILENAME
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    ErrorLog \${APACHE_LOG_DIR}/error.log
+    CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+    Alias /static $(pwd)/static
+    <Directory $(pwd)/static>
+        Require all granted
+    </Directory>
+
+    <Directory $(pwd)/raspiPOS>
+        <Files wsgi.py>
+            Require all granted
+        </Files>
+    </Directory>
+
+    WSGIDaemonProcess simorder user=www-data group=www-data python-home=$(pwd)/venv python-path=$(pwd)
+    WSGIProcessGroup simorder
+    WSGIScriptAlias / $(pwd)/raspiPOS/wsgi.py
+</VirtualHost>
+EOF
+
+# b. Move config file to Apache's sites-available directory
+if [ -d "$DIRECTORY" ]; then
+    sudo mv -f $FILENAME $APACHE_CONFIG_FILE_1
+    echo "Config file $APACHE_CONFIG_FILE_1 successfully updated"
+else
+    echo "Apache sites-available directory not found"
     exit 1
 fi
 
-# f. Append the command to the end of the file
-{
-    echo ""
-    echo "# Force WSGI application to run within (main) Python interpreter"
-    echo "$command_to_add"
-} | sudo tee -a "$config_file" > /dev/null
+# Update Apache Configuration File 2 (Global Apache Configuration)
+print_header "Configuring Apache - Global Configuration"
+APACHE_CONFIG_FILE_2="/etc/apache2/apache2.conf"
+COMMAND_TO_ADD="WSGIApplicationGroup %{GLOBAL}"
+echo "# Force WSGI application to run within (main) Python interpreter" | sudo tee -a /etc/apache2/apache2.conf > /dev/null
+echo "WSGIApplicationGroup %{GLOBAL}" | sudo tee -a /etc/apache2/apache2.conf > /dev/null
 
 if [ $? -eq 0 ]; then
-    echo "Config file $config_file successfully updated"
+    echo "Config file $APACHE_CONFIG_FILE_2 successfully updated"
 else
-    echo "Failed to update $config_file"
+    echo "Error: Failed to update Apache global configuration."
     exit 1
 fi
 
 # Configuring Django
-print_header "Configuring Django"
-django_root="/home/$current_user/raspiPOS/"
-django_migrations="$django_root$current_app/migrations"
-python3_venv=$django_root"venv/bin/python3"
+print_header "Configuring Django static files"
+PYTHON3_VENV=$(which python3)
 
 # a. Collect static files
-print_header "Collecting static files"
-$python3_venv $django_root/manage.py collectstatic
+$PYTHON3_VENV $(pwd)/manage.py collectstatic --noinput
+echo "Static files configured"
 
-# b. Reset Django database
-print_header "Reset Django database"
-find $django_migrations -type f -name '*.py' ! -name '__init__.py' -delete
-$python3_venv $django_root/manage.py flush
-$python3_venv $django_root/manage.py makemigrations
-$python3_venv $django_root/manage.py migrate
-
-# c. Create superuser admin w/ pass admin
-print_header "Create Django superuser"
-$python3_venv manage.py createsuperuser
-
-# Set permissions
+# Set permissions for Apache user (www-data)
 print_header "Setting permissions for Apache user"
-# a. Django database
-sudo chmod -R u+w /home/dubaleeiro/raspiPOS
-sudo chown www-data:www-data /home/dubaleeiro/raspiPOS
-sudo chmod -R 775 /home/dubaleeiro/raspiPOS
-sudo chown www-data:www-data /home/dubaleeiro/raspiPOS/db.sqlite3
-sudo chmod 664 /home/dubaleeiro/raspiPOS/db.sqlite3
-sudo usermod -aG www-data dubaleeiro
-echo "Databaase permissions set"
+
+sudo chown -R www-data:www-data $(pwd)
+sudo find $(pwd) -type d -exec chmod 750 {} +
+sudo find $(pwd) -type f -exec chmod 640 {} +
+sudo chmod 770 $(pwd)/static
+sudo chmod 750 $(pwd)/raspiPOS/wsgi.py
+sudo chmod 660 $(pwd)/db.sqlite3
+sudo chmod -R 750 $(pwd)/venv
+sudo usermod -aG www-data $USER
+sudo chmod 750 $(pwd)
+sudo chmod 755 $(dirname $(pwd))
+sudo chmod 755 $(pwd)
+
+echo "Permissions set for Apache user"
 
 # b. USB
 print_header "Configuring USB access"
@@ -154,17 +167,31 @@ print_header "Configuring sudoers"
 echo 'www-data ALL=(ALL) NOPASSWD: /sbin/poweroff, /sbin/reboot, /sbin/shutdown' | sudo EDITOR='tee -a' visudo
 echo "Sudoers permissions set"
 
-# Modify comitup configuration
-print_header "Modifying comitup configuration"
-sudo sed -i "/# web_service: httpd.service/a web_service: apache2.service" /etc/comitup.conf
-echo "Config file successfully updated"
+# Change hostname
+print_header "Changing hostname"
+
+# Set the new hostname
+if ! sudo hostnamectl set-hostname "$HOSTNAME"; then
+    echo "Error: Failed to change hostname. Exiting script."
+    exit 1
+fi
+
+# Update /etc/hosts file
+if ! sudo sed -i "s/^127.0.1.1.*/127.0.1.1\t$HOSTNAME/" /etc/hosts; then
+    echo "Error: Failed to update /etc/hosts. Exiting script."
+    exit 1
+fi
+
+echo "#########################################################################"
+echo "After reboot, access simOrder from your browser: http://$(hostname).local"
+echo "#########################################################################"
 
 # Prompt for confirmation to reboot
 print_header "Script execution completed"
 echo "Your Raspberry Pi needs to be restarted so that changes take effect"
 read -p "Do you want to do it now? (y/n): " answer
 
-# Handling reboot after successful instalation
+# Handling reboot after successful installation
 case $answer in
     [Yy]* )
         echo "Rebooting now..."

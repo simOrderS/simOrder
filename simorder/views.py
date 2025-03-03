@@ -373,10 +373,10 @@ def power(request, op_id=None):
     if op_id is not None:
         op_id = int(op_id)
         if op_id == 0:
-            os.system('sudo shutdown -h now')
+            os.system('sudo poweroff')
             return render(request, 'power.html', {'message': 'System is shutting down...', 'op_id': op_id})
         elif op_id == 1:
-            os.system('sudo shutdown -r now')
+            os.system('sudo reboot')
             return render(request, 'power.html', {'message': 'System is restarting...', 'op_id': op_id})
     
     return render(request, 'power.html', {'op_id': op_id})
