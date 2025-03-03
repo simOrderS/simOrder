@@ -1,4 +1,4 @@
-![simOrder Logo](static/img/simOrder_logo.png)
+<img src="static/img/simOrder_logo.png" alt="simOrder Logo" width="300" height="auto">
 
 # simOrder
 # A Raspberry Pi-based Order Management and POS System
