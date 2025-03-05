@@ -58,6 +58,10 @@ To add screenshots, upload your images to your repository or another hosting ser
 
 https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46
 
+<video src="https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46" controls width="640">
+  <figcaption>Demo: Login Settings</figcaption>
+</video>
+
 https://github.com/user-attachments/assets/f4251d40-add2-4b39-9a37-d622b7ab5920
 
 
