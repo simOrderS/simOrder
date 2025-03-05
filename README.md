@@ -55,9 +55,8 @@ To add screenshots, upload your images to your repository or another hosting ser
 |:-------------:|:--------------------:|:--------------:|:--------------:|:--------------:|:--------------:|
 | ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
 
-![Demo Login Settings](media/demo_Login_Settings.mp4)
+![Demo Login Settings](https://github.com/simOrderS/simOrder/raw/main/media/demo_Login_Settings.mp4)
 
-https://github.com/simOrderS/simOrder/raw/main/media/demo_Login_Settings.mp4
 
 
 ## 🧩 Contributing
