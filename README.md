@@ -55,6 +55,12 @@ To add screenshots, upload your images to your repository or another hosting ser
 |:-------------:|:--------------------:|:--------------:|:--------------:|:--------------:|:--------------:|
 | ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
 
+<figure>
+    <video src="https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46" controls width="640"></video>
+    <figcaption>Demo: Login Settings</figcaption>
+</figure>
+
+
 [![Demo: Login Settings](media/thumbnail.png)](https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46)
 
 
