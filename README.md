@@ -53,7 +53,8 @@ To add screenshots, upload your images to your repository or another hosting ser
 
 | Login and System Settings | Printers | MasterData  | Users and Groups | Order Management | Analytics |
 |:-------------:|:--------------------:|:--------------:|:--------------:|:--------------:|:--------------:|
-| ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
+| ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |[![Video Thumbnail](path/to/thumbnail.jpg)](media/demo_Login_Settings.mp4)
+
 
 ## 🧩 Contributing
 
