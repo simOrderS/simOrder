@@ -24,6 +24,7 @@ sudo apt install libapache2-mod-wsgi-py3 -y
 sudo apt install python3 python3-venv python3-pip -y
 sudo apt install build-essential libdbus-glib-1-dev libgirepository1.0-dev libpython3-dev libdbus-1-dev -y
 sudo apt install libcairo2-dev pkg-config python3-dev libgirepository1.0-dev -y
+sudo apt-get clean
 
 # Create and activate virtual environment
 print_header "Creating virtual environment"
@@ -46,7 +47,7 @@ fi
 # Install project dependencies
 print_header "Installing project dependencies"
 if [ -f "requirements.txt" ]; then
-    if pip3 install -r requirements.txt; then
+    if python3 -m pip install -r requirements.txt; then
         echo "Python dependencies successfully installed"
     else
         echo "Error: Failed to install Python dependencies"
@@ -60,7 +61,6 @@ fi
 
 # Generate a secret key and write to .env file
 print_header "Generating Django Secret Key"
-
 SECRET_KEY=$(python3 -c 'import random; import string; print("".join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=50)))')
 
 # Check if .env file exists, create it if not
