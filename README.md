@@ -49,47 +49,33 @@ Follow the configuration steps at the **home** page.
 
 ## 📸 Video Demos
 
-To add screenshots, upload your images to your repository or another hosting service and replace the placeholder links below with the actual URLs.
-
-| Login and System Settings | Printers | MasterData  | Users and Groups | Order Management | Analytics |
-|:-------------:|:--------------------:|:--------------:|:--------------:|:--------------:|:--------------:|
-| ![Settings](link-to-pos-image) | ![Printers](link-to-inventory-image) | ![MasterData](link-to-orders-image) | ![Users](link-to-orders-image) | ![Orders](link-to-orders-image) |![Analytics](link-to-orders-image) |
-
-<figure>
-    <video src="https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46" controls width="640"></video>
-    <figcaption>Demo: Login Settings</figcaption>
-</figure>
-
-
-[![Demo: Login Settings](media/thumbnail.png)](https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46)
-
-
+**Login and System Settings:**
 
 https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46
 
-<video src="https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46" controls width="640">
-  <figcaption>Demo: Login Settings</figcaption>
-</video>
+
+**Printers:**
 
 https://github.com/user-attachments/assets/f4251d40-add2-4b39-9a37-d622b7ab5920
 
-[![Demo: Login Settings](path/to/thumbnail.png)](https://github.com/user-attachments/assets/91b6aec6-99ae-4eca-a774-6efa0ec34a46)
-
+**MasterData:**
 
 https://github.com/user-attachments/assets/ffd82d38-8af6-446a-a4de-04251fd98b7e
 
 
+**Users and Groups:**
 
 https://github.com/user-attachments/assets/6ceb80bf-d669-41b7-9b16-835e35a93b78
 
 
+**Order Management:**
 
 https://github.com/user-attachments/assets/f0b0262b-9be3-49e5-b537-8dc57b4943d6
 
 
+**Analytics:**
 
 https://github.com/user-attachments/assets/c5c29ea7-4cc1-4cf6-8eec-6868e0734f09
-
 
 
 ## 🧩 Contributing
