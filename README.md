@@ -27,8 +27,8 @@ simOrder is an affordable, open-source Order Management and Point of Sale (POS) 
 - Raspberry Pi 4 4GB RAM (recommended, tested also on a Pi 3 A+)
 - SD Card (32GB recommended)
 - 7" iOS or Android Tablet connected to your local network
-- ESC/POS USB and/ or Bluetooth Thermal Printer (app configured for a 58 mm like this one)
-<img src="https://github.com/user-attachments/assets/ffb31c4c-03c1-4709-b254-ddd25c5d242f)" width="256" height="auto">
+- ESC/POS USB and/ or Bluetooth Thermal Printer (app configured for a 58 mm like the one below)
+<img src="https://github.com/user-attachments/assets/6a7ed41b-8bac-4c5b-993b-cfa03a3c5f2b" width="256" height="auto">
 
 ## 🚀 Install
 
@@ -76,7 +76,7 @@ https://github.com/user-attachments/assets/6ceb80bf-d669-41b7-9b16-835e35a93b78
 https://github.com/user-attachments/assets/f0b0262b-9be3-49e5-b537-8dc57b4943d6
 
 Examples of printed receipt and orders:
-<img src="https://github.com/user-attachments/assets/ffb31c4c-03c1-4709-b254-ddd25c5d242f" width="894" height="auto">
+<img src="https://github.com/user-attachments/assets/ffb31c4c-03c1-4709-b254-ddd25c5d242f" width="512" height="auto">
 
 
 **Users and Groups:**
