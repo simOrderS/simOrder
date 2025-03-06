@@ -103,3 +103,6 @@ Copyright &copy; 2025 simOrder
 This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
 
 
+[![Bitcoin Donate](https://www.drupal.org/files/project-images/bitcoindonate.png)](bitcoin:YOUR_BITCOIN_ADDRESS)
+
+
