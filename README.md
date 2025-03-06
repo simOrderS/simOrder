@@ -76,6 +76,7 @@ https://github.com/user-attachments/assets/6ceb80bf-d669-41b7-9b16-835e35a93b78
 https://github.com/user-attachments/assets/f0b0262b-9be3-49e5-b537-8dc57b4943d6
 
 Examples of printed receipt and orders:
+
 <img src="https://github.com/user-attachments/assets/ffb31c4c-03c1-4709-b254-ddd25c5d242f" width="512" height="auto">
 
 
