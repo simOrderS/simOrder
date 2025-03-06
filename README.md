@@ -3,7 +3,6 @@
 </p>
 <h1 align="center">simOrder</h1>
 <p align="center">
-  Copyright &copy; 2025 simOrder
   <a href="https://www.apache.org/licenses/LICENSE-2.0">
     <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache 2.0">
   </a>
@@ -97,5 +96,10 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## ⚖️ License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Copyright &copy; 2025 simOrder
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
+
 
